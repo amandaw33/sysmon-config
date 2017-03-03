@@ -5,7 +5,7 @@
   Master project:	https://github.com/SwiftOnSecurity/sysmon-config
   Master license:	Creative Commons Attribution 4.0 | You may privatize, fork, edit, teach, publish, or deploy for commercial use - with attribution in the text.
 
-  Fork version:	<N/A>
+  Fork version:	1.0
   Fork author:	<N/A>
   Fork project:	<N/A>
   Fork license:	<N/A>
@@ -269,10 +269,14 @@
 	<!--SYSMON EVENT ID 10 : INTER-PROCESS ACCESS-->
 		<!--DATA: UtcTime, SourceProcessGuid, SourceProcessId, SourceThreadId, SourceImage, TargetProcessGuid, TargetProcessId, TargetImage, GrantedAccess, CallTrace-->
 		<ProcessAccess onmatch="include">
-		<!--COMMENT:	Monitor for processes accessing other process' memory. This can be valuable, but can cause massive event glut.
-				Disabled by default since including even one entry here activates this component. Reward/performance decision.
-				Encourage you to experiment with this feature yourself.-->
-		<!--FUTURE WORK:	Include mimikatz-specific events.-->
+			<TargetImage condition="is">C:\Windows\System32\lsass.exe</TargetImage>
+			<TargetImage condition="is">C:\Windows\System32\winlogon.exe</TargetImage>
+			<!--COMMENT:	Monitor for processes accessing other process' memory. This can be valuable, but can cause massive event glut.
+			Added events in attempt to monitor for Mimikatz-->
+		</ProcessAccess>
+		<ProcessAccess onmatch="exclude">
+			<SourceImage condition="is">C:\Program Files\Altiris\Altiris Agent\AeXNSAgent.exe</SourceImage>
+			<!--COMMENT:	Filter out Altiris Agent using lsass-->
 		</ProcessAccess>
 
 	<!--SYSMON EVENT ID 11 : FILE CREATED-->
